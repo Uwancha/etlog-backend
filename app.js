@@ -13,8 +13,27 @@ import rateLimit from "express-rate-limit";
 import createError from "http-errors";
 import session  from "express-session";
 import cors from "cors";
+import mongoose from "mongoose";
 
 configDotenv();
+
+// Connect to databse
+const mongoUri = process.env.MONGO_URI
+
+const options = {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+}
+
+mongoose.connect(mongoUri, options);
+
+const db = mongoose.connection;
+
+db.on("error", console.error.bind(console, "db connection error"))
+
+db.once("open", () => {
+    console.log("db successfully connected")
+})
 
 const app = express();
 
