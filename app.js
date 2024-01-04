@@ -14,6 +14,7 @@ import createError from "http-errors";
 import session  from "express-session";
 import cors from "cors";
 import mongoose from "mongoose";
+import MongoStore from "connect-mongo";
 
 configDotenv();
 
@@ -57,12 +58,21 @@ const limit = rateLimit({
 
 app.use(limit);
 
-// Configure session 
+// Get client
+const client =  mongoose.connection.client
+
+// Setup store
+const store = new MongoStore({
+    client
+})
+
+// Configure session
 app.use(
     session({
         secret: process.env.SECRET,
         resave: false,
         saveUninitialized: true,
+        store,
         cookie: {
             secure: true,
             httpOnly: true,
