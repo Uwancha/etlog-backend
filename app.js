@@ -16,6 +16,16 @@ import cors from "cors";
 import mongoose from "mongoose";
 import MongoStore from "connect-mongo";
 
+// Import sanitization middleware
+import xss from 'xss-clean';
+import mongoSanitize from 'express-mongo-sanitize';
+
+// CSRUF
+import csurf from "csurf";
+
+// Crypto for session encryption
+import crypto from "crypto";
+
 // Routes
 import profileRoutes from "./routes/profileRoutes.js";
 import postRoutes from "./routes/postRoutes.js";
@@ -44,17 +54,21 @@ db.once("open", () => {
 
 const app = express();
 
-// Enablr CORS
-app.use(cors());
-
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
 
 // Secure the app
+if (process.env.NODE_ENV === 'production') {
+    app.use(enforce.HTTPS());
+}  
+
 app.use(helmet());
 app.use(compression())
 
+// Sanitize input
+app.use(xss());
+app.use(mongoSanitize()); 
 
 // Rate limiting
 const limit = rateLimit({
@@ -63,6 +77,10 @@ const limit = rateLimit({
 })
 
 app.use(limit);
+
+// Session encryption
+const sessionSecret = crypto.randomBytes(64).toString('hex');
+
 
 // Get client
 const client =  mongoose.connection.client
@@ -75,7 +93,7 @@ const store = new MongoStore({
 // Configure session
 app.use(
     session({
-        secret: process.env.SECRET,
+        secret: sessionSecret,
         resave: false,
         saveUninitialized: true,
         store,
@@ -86,6 +104,15 @@ app.use(
         }
     })
 );
+
+// Enablr CORS
+app.use(cors());
+
+
+// CSRF protection
+app.use(csurf({
+    cookie: true
+  }));
 
 // Content Security Policy(CSP)
 app.use(
