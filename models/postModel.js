@@ -23,6 +23,10 @@ const PostSchema = new Schema(
             type: String,
             required: true
         },
+        category: {
+            type: String,
+            required: true
+        },
 
         // The user who authored the post (referenced by their ObjectId)
         user: {
