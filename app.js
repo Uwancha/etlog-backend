@@ -16,6 +16,12 @@ import cors from "cors";
 import mongoose from "mongoose";
 import MongoStore from "connect-mongo";
 
+// Routes
+import profileRoutes from "./routes/profileRoutes.js";
+import postRoutes from "./routes/postRoutes.js";
+import commentRoutes from "./routes/commentRoutes.js";
+import authRoutes from "./routes/authRoutes.js";
+
 configDotenv();
 
 // Connect to databse
@@ -95,9 +101,10 @@ app.use(
 );
 
 // Routes
-app.get("/", (req, res) => {
-    res.send("Hello from the server")
-});
+app.use('/api', authRoutes);
+app.use('/api', profileRoutes);
+app.use('/api', postRoutes);
+app.use('/api', commentRoutes);
 
 // Handle 404 errors
 app.use((req, res, next) => {
