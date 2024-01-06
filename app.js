@@ -26,6 +26,9 @@ import csurf from "csurf";
 // Crypto for session encryption
 import crypto from "crypto";
 
+// Passport configuration
+import { passport } from "./utils/passport.js";
+
 // Routes
 import profileRoutes from "./routes/profileRoutes.js";
 import postRoutes from "./routes/postRoutes.js";
@@ -109,11 +112,6 @@ app.use(
 app.use(cors());
 
 
-// CSRF protection
-app.use(csurf({
-    cookie: true
-  }));
-
 // Content Security Policy(CSP)
 app.use(
     helmet.contentSecurityPolicy({
@@ -129,6 +127,17 @@ app.use(
 
 // Routes
 app.use('/api', authRoutes);
+
+// CSRF protection
+app.use(csurf({
+    cookie: true
+}));
+
+// Intialize passport
+app.use(passport.initialize());
+app.use(passport.session());
+
+
 app.use('/api', profileRoutes);
 app.use('/api', postRoutes);
 app.use('/api', commentRoutes);
