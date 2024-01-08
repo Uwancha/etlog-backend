@@ -6,21 +6,22 @@ import {
     createComment, 
     updateComment, 
     deleteComment
-} from "../controllers/commentcontroller.js"
+} from "../controllers/commentController.js"
+import { isAuthorized } from "../utils/isAuthorized.js";
 
 const router = Router();
 
 // Get comments associated with a post
-router.get("/posts/:postId/comments", getCommentsForPost);
+router.get("/posts/:postId/comments", isAuthorized, getCommentsForPost);
 
 // Create comment in a post
-router.post("/posts/:postId/comments", createComment);
+router.post("/posts/:postId/comments", isAuthorized, createComment);
 
 // Update a comment
-router.put('/comments/:commentId', updateComment);
+router.put('/comments/:commentId', isAuthorized, updateComment);
 
 // Delete a comment
-router.delete('/comments/:commentId', deleteComment);
+router.delete('/comments/:commentId', isAuthorized, deleteComment);
 
 const commentRoutes = router;
 

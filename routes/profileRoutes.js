@@ -6,21 +6,24 @@ import {
     getUserPosts,
     updateUserPost,
     updateUserProfile
-} from "../controllers/profileController.js"
+} from "../controllers/profileController.js";
+
+// Protect routes
+import { isAuthorized } from "../utils/isAuthorized.js";
 
 const router = Router();
 
 // Get a user profile
-router.get('/profile/:userId', getUserProfile);
+router.get('/profile/:userId', isAuthorized, getUserProfile);
 
 // Get a user posts
-router.get('/profile/:userId/posts', getUserPosts);
+router.get('/profile/:userId/posts', isAuthorized, getUserPosts);
 
 // Update a user post
-router.put('/profile/:userId/posts/:postId', updateUserPost);
+router.put('/profile/:userId/posts/:postId', isAuthorized, updateUserPost);
 
 // Update a user profile
-router.put('/profile/:userId', updateUserProfile);
+router.put('/profile/:userId', isAuthorized, updateUserProfile);
 
 const profileRoutes = router;
 
