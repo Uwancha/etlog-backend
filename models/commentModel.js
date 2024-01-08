@@ -10,10 +10,10 @@ const Schema = mongoose.Schema;
 
 const CommentSchema = new Schema(
     {
-        body: {
+        text: {
             type: String, 
             required: true,
-            maxLength: 500,
+            maxLength: 1000,
         },
 
         // The user who authored the comment (referenced by their ObjectId)
