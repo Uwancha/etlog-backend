@@ -4,7 +4,6 @@ import { Router } from "express";
 import {
     getUserProfile,
     getUserPosts,
-    updateUserPost,
     updateUserProfile
 } from "../controllers/profileController.js";
 
@@ -18,9 +17,6 @@ router.get('/profile/:userId', isAuthorized, getUserProfile);
 
 // Get a user posts
 router.get('/profile/:userId/posts', isAuthorized, getUserPosts);
-
-// Update a user post
-router.put('/profile/:userId/posts/:postId', isAuthorized, updateUserPost);
 
 // Update a user profile
 router.put('/profile/:userId', isAuthorized, updateUserProfile);

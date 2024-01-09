@@ -1,8 +1,7 @@
 import { Router } from "express";
 
 // Controllers / route handlers
-import { 
-    getCommentsForPost, 
+import {  
     createComment, 
     updateComment, 
     deleteComment
@@ -10,9 +9,6 @@ import {
 import { isAuthorized } from "../utils/isAuthorized.js";
 
 const router = Router();
-
-// Get comments associated with a post
-router.get("/posts/:postId/comments", isAuthorized, getCommentsForPost);
 
 // Create comment in a post
 router.post("/posts/:postId/comments", isAuthorized, createComment);

@@ -111,7 +111,6 @@ const deleteComment = async (req, res, next) => {
 };
 
 export {
-    getCommentsForPost,
     createComment,
     updateComment,
     deleteComment
