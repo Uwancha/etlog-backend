@@ -2,7 +2,7 @@ import { body, validationResult } from "express-validator";
 import Post from "../models/postModel.js";
 
 // Cloudinary configuration
-import { cloudinary, cloudinaryV2 } from "../cloudinary.js";
+import { cloudinaryV2 } from "../cloudinary.js";
 
 // Get all posts from db and populate them with their respecting user/author
 const getAllPosts = async (req, res, next) => {

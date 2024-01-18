@@ -8,5 +8,5 @@ cloudinaryV2.config({
     secure: true,
 });
 
-export { cloudinary, cloudinaryV2 };
+export { cloudinaryV2 };
 
