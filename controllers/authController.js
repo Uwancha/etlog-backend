@@ -1,7 +1,7 @@
 import User from "../models/userModel.js";
 import { body, validationResult } from "express-validator";
 import bcrypt from "bcryptjs";
-import passport from "passport";
+import { passport } from "../utils/passport.js";
 
 // Middleware to hash the password
 const hashPassword = async (req, res, next) => {
@@ -73,16 +73,21 @@ const login = async (req, res, next) => {
         }
 
         if (!user) {
-            return res.status(401).json({message: "Authentication failed"})
+            return res.status(401).json({message: "Authentication failed", info})
         }
 
         req.logIn(user, (loginerror) => {
             if (loginerror) {
                 return next(loginerror)
             }
+
+            req.session.save((err) => {
+                if (err) return next(err);
+            
+                return res.status(200).json({message: "Successfull login", user: req.user})
+            });
         });
 
-        return res.status(200).json({message: "Successfull login", user})
     })(req, res, next)
 };
 
