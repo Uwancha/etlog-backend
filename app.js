@@ -14,7 +14,6 @@ import createError from "http-errors";
 import session  from "express-session";
 import cors from "cors";
 import mongoose from "mongoose";
-import MongoStore from "connect-mongo";
 
 // Import sanitization middleware
 import xss from 'xss-clean';
@@ -84,22 +83,11 @@ app.use(limit);
 // Session encryption
 const sessionSecret = crypto.randomBytes(64).toString('hex');
 
-
-// Get client
-const client =  mongoose.connection.client
-
-// Setup store
-const store = new MongoStore({
-    client
-})
-
-// Configure session
 app.use(
     session({
         secret: sessionSecret,
         resave: false,
         saveUninitialized: true,
-        store,
         cookie: {
             secure: true,
             httpOnly: true,
@@ -109,7 +97,10 @@ app.use(
 );
 
 // Enablr CORS
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:3000',
+    credentials: true
+}));
 
 
 // Content Security Policy(CSP)
