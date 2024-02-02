@@ -1,7 +1,11 @@
 import User from "../models/userModel.js";
 import { body, validationResult } from "express-validator";
 import bcrypt from "bcryptjs";
-import { passport } from "../utils/passport.js";
+import passport from "passport";
+import Jwt from "jsonwebtoken";
+import { config as configDotenv} from "dotenv";
+
+configDotenv()
 
 // Middleware to hash the password
 const hashPassword = async (req, res, next) => {
@@ -67,7 +71,7 @@ const signup = [
 
 // Login route middleware
 const login = async (req, res, next) => {
-    passport.authenticate("local", (err, user, info) => {
+    passport.authenticate("local", {session: false}, (err, user, info) => {
         if (err) {
             return next(err);
         }
@@ -81,11 +85,10 @@ const login = async (req, res, next) => {
                 return next(loginerror)
             }
 
-            req.session.save((err) => {
-                if (err) return next(err);
+            const jwtSecret = process.env.JWTSECRET
+            const token = Jwt.sign({userId: user.id}, jwtSecret,)
             
-                return res.status(200).json({message: "Successfull login", user: req.user})
-            });
+            return res.status(200).json({message: "Successfull login", user, token})
         });
 
     })(req, res, next)
