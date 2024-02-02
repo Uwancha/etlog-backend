@@ -1,4 +1,5 @@
 import { Router } from "express";
+import passport from "passport";
 
 // Controllers / route handlers
 import {
@@ -7,19 +8,14 @@ import {
     updateUserProfile
 } from "../controllers/profileController.js";
 
-// Protect routes
-import { isAuthorized } from "../utils/isAuthorized.js";
-
 const router = Router();
 
 // Get a user profile
-router.get('/profile/:userId', isAuthorized, getUserProfile);
+router.get('/profile/:userId', passport.authenticate('jwt', {session: false}), getUserProfile);
 
-// Get a user posts
-router.get('/profile/:userId/posts', isAuthorized, getUserPosts);
 
 // Update a user profile
-router.put('/profile/:userId', isAuthorized, updateUserProfile);
+router.put('/profile/:userId', passport.authenticate('jwt', {session: false}), updateUserProfile);
 
 const profileRoutes = router;
 
