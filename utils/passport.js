@@ -1,7 +1,12 @@
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
+import { Strategy } from "passport-jwt";
+import { ExtractJwt } from "passport-jwt";
 import bcrypt from "bcryptjs"
 import User from "../models/userModel.js";
+import { config as configDotenv} from "dotenv";
+
+configDotenv()
 
 passport.use(
     new LocalStrategy(
@@ -28,18 +33,25 @@ passport.use(
     } )
 )
 
-passport.serializeUser((user, done) => {
-    done(null, user.id)
-})
+const options = {
+    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+    secretOrKey: process.env.JWTSECRET,
+}
 
-passport.deserializeUser((id, done) => {
-    User.findById(id)
-        .then(user => {
-            done(null, user)
-        })
-        . catch (err => {
-            done(err)
-        })
-})
+passport.use(
+    new Strategy(options, async (payload, done) => {
+        try {
+            const user = await User.findById(payload.userId)
+            if (!user) {
+                done(null, false)
+            }
+
+            return done(null, user)
+        } catch (error) {
+            done(error, null)
+        }
+        
+    } )
+)
 
 export { passport }
